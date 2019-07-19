@@ -15,6 +15,7 @@ var {User} = require('./models/users');
 
 var app = express();
 
+const port = process.env.PORT || 3000;
 app.use(bodyParser.json());
 
 app.post('/todos', (req, res) => {
@@ -49,14 +50,14 @@ app.get('/todos/:id', (req, res) => {
       return res.status(404).send('cant Find Todo/ not exist');
     } 
     res.send({todo});
-  }).catch((err) => {
+  }).catch((err) => { 
     res.status(400).send(err);
   });
 
 })
 
-app.listen(3000, () => {
-  console.log('Started on Port 3000');
+app.listen(port, () => {
+  console.log(`Started on port ${port}`);
 });
 
 module.exports = {app};
