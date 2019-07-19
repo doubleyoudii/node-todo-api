@@ -1,14 +1,18 @@
 const expect = require('expect');
 const request = require('supertest');
 
+const {ObjectID} = require('mongodb'); //to access id
+
 
 //```````````local`````````````````````````````
 const {app} = require('./../server');
 const {Todo} = require('./../models/todos');
 
 const todoes = [{
+  _id: new ObjectID(),            //refactored ***/
   text: "To do First test"
 }, {
+  _id: new ObjectID(),            //refactored ***/
   text: "To do Second Test"
 }]; 
 
@@ -43,13 +47,13 @@ describe('POST /todo', () => {
         }
 
         // Todo.find().then((todos) => {
-        Todo.find({text}).then((todos) => {   //refactored */*
+        Todo.find({text}).then((todos) => {   //refactored ****
           expect(todos.length).toBe(1);
           expect(todos[0].text).toBe(text);
           done();
         }).catch((e) => done(e));
-      })
-  })
+      });
+  });
 
   it('should not create a invalid todo', (done) => {
     request(app)
@@ -63,7 +67,7 @@ describe('POST /todo', () => {
 
         Todo.find().then((todos) => {
           // expect(todos.length).toBe(0);
-          expect(todos.length).toBe(2); //Refactored "2"    */*
+          expect(todos.length).toBe(2); //Refactored "2"    ****
           done();
         }).catch((e) => done(e));
       });
@@ -79,9 +83,39 @@ describe('GET /todos', () => {
         expect(res.body.todos.length).toBe(2);
       })
       .end(done);
-  })
-})
+  });
+});
 
+
+describe('GET /todo/:iid', () => {
+  it('should return todo doc', (done) => {
+    request(app)
+      .get(`/todos/${todoes[0]._id.toHexString()}`)
+      .expect(200)
+      .expect((res) => {
+        expect(res.body.todo.text).toBe(todoes[0].text);
+      })
+      .end(done);
+
+  });
+
+  it('should return error 404 if todo not found', (done) => {
+    //make sure you get 404 back
+    var id = new ObjectID();
+    request(app)
+      .get(`/todos/${id.toHexString()}`)
+      .expect(404)
+      .end(done);
+  });
+
+  it('should return 404 if todo is not valid', (done) => {
+    var id = 123;
+    request(app)
+      .get(`/todos/${id}`)
+      .expect(404)
+      .end(done);
+  })
+});
 
 
 
