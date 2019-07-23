@@ -13,7 +13,9 @@ const todoes = [{
   text: "To do First test"
 }, {
   _id: new ObjectID(),            //refactored ***/
-  text: "To do Second Test"
+  text: "To do Second Test",
+  completed: true,                //refactored **/*
+  completedAt: 444                //refactored **/*
 }]; 
 
 //``Fix for expecting with zero database``````
@@ -156,10 +158,60 @@ describe('DELETE /todo/:id', () => {
       .delete(`/todos/${id}`)
       .expect(404)
       .end(done)
-  })
-
-
+  });
 
 });
 
+describe('PATCH /todos/:id', () => {
+
+  it('should update the todo', (done) => {
+    var id = todoes[0]._id.toHexString();
+    var update = {
+      text: 'Testing Patch',
+      completed: true,
+    };
+    request(app)
+      .patch(`/todos/${id}`)
+      .send(update)
+      .expect(200)
+      .expect((res) => {
+        expect(res.body.todo.text).toBe('Testing Patch');
+        expect(res.body.todo.completed).toBe(true);
+        expect(res.body.todo.completedAt).toBeA('number');
+      })
+      .end(done 
+        // (err, res) => {
+        // if (err) {
+        //   return done(err);
+        // }
+
+        // Todo.findByIdAndUpdate(id).then((todo) => {
+        //   expect(todo.completed).toBe(true);
+        //   expect(todo.completedAt).toBeA('number');
+          // done()
+        // }
+        
+      
+      );
+  });
+
+  it('should clear up completedAt when todo is not completed', (done) => { 
+    var id = todoes[1]._id.toHexString();
+    var text = 'Testing Patch nmber 2';
+
+    request(app)
+      .patch(`/todos/${id}`)
+      .send({
+        completed: false,
+        text
+      })
+      .expect(200)
+      .expect((res) => {
+        expect(res.body.todo.text).toBe(text);
+        expect(res.body.todo.completed).toBe(false);
+        expect(res.body.todo.completedAt).toNotExist(); 
+      })
+      .end(done);
+  });
+});
 
