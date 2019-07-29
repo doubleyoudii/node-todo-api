@@ -20,6 +20,7 @@ var app = express();
 
 const port = process.env.PORT;
 app.use(bodyParser.json());
+//````````````````````````````````````````````````````````````````````````````
 
 app.post('/todos', (req, res) => {
   var todo = new Todo({
@@ -32,7 +33,7 @@ app.post('/todos', (req, res) => {
     res.status(400).send(err);
   })
 });
-
+//````````````````````````````````````````````````````````````````````````````
 app.get('/todos', (req, res) => {
   Todo.find().then((todos) => {
     res.send({todos});
@@ -40,6 +41,7 @@ app.get('/todos', (req, res) => {
     res.status(400).send(err);
   })
 });
+//````````````````````````````````````````````````````````````````````````````
 
 app.get('/todos/:id', (req, res) => {
   var id = req.params.id;
@@ -58,6 +60,7 @@ app.get('/todos/:id', (req, res) => {
   });
 
 });
+//````````````````````````````````````````````````````````````````````````````
 
 app.delete('/todos/:id', (req, res) => {
   var id = req.params.id;
@@ -77,6 +80,7 @@ app.delete('/todos/:id', (req, res) => {
   })
 
 });
+//````````````````````````````````````````````````````````````````````````````
 
 app.patch('/todos/:id', (req, res) => {
   var id = req.params.id;
@@ -102,7 +106,30 @@ app.patch('/todos/:id', (req, res) => {
   }).catch((e) => {
     res.status(400).send();
   })
+})  
+
+
+//```````````` Users Post``````````````````````````````
+app.post('/users', (req, res) => {
+  var body = _.pick(req.body, ['email', 'password']);
+
+  var user = new User({
+    email: body.email,
+    password: body.password
+  })
+
+  user.save().then(() => {
+    return user.generateAuthToken();
+    // res.send(doc)
+  }).then((token) => {
+    res.header('x-auth', token).send(user);
+  })
+  .catch((err) => {
+    res.status(400).send(err);
+  })
+  
 })
+
 
 app.listen(port, () => {
   console.log(`Started on port ${port}`);
