@@ -14,6 +14,7 @@ var {mongoose} = require('./db/mongoose');
 //`````````````````````````````````````````````````````````
 var {Todo} = require('./models/todos');
 var {User} = require('./models/users');
+var {authenticate} = require('./middleware/autenticate');
 
 
 var app = express();
@@ -109,7 +110,7 @@ app.patch('/todos/:id', (req, res) => {
 })  
 
 
-//```````````` Users Post``````````````````````````````
+//````````````**refactored** Users Post``````````````````````````````
 app.post('/users', (req, res) => {
   var body = _.pick(req.body, ['email', 'password']);
 
@@ -128,7 +129,25 @@ app.post('/users', (req, res) => {
     res.status(400).send(err);
   })
   
-})
+});
+
+//../middleware/autenticate cantains the file that will expain this
+
+app.get('/users/me', authenticate, (req, res) => {
+  res.send(req.user);
+  // var token = req.header('x-auth');
+
+  // User.findByToken(token).then((user => {
+  //   if (!user) {
+  //     return Promise.reject();
+  //   }
+
+  //   res.send(user);
+  // }))
+  // .catch((err) => {
+  //   res.status(401).send();
+  // })
+});
 
 
 app.listen(port, () => {
