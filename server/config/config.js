@@ -18,3 +18,10 @@ if (env === 'development' || env === 'test') {
 //   process.env.PORT = 3000;
 //   process.env.MONGODB_URI = 'mongodb://localhost:27017/TodoAppTest'
 // }
+//
+
+
+
+//mongodb://heroku_4cw33bxh:k9nl7bvi827at1st8e4j1k0tpr@ds151997.mlab.com:51997/heroku_4cw33bxh
+
+//    protocol://username:password@address:port/database
