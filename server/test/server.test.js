@@ -575,7 +575,7 @@ describe('hooks', function() {
         })
         .expect(400)
         .expect((res) => {
-          expect(res.headers['x-auth']).toBeFalsy()
+          expect(res.headers['x-auth']).toBeFalsy,()
         })
         .end((err, res) => {
           if (err) {

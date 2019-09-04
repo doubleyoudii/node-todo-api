@@ -94,7 +94,7 @@ UserSchema.statics.findByCredentials = function (email, password) {
     if(!user) {
       return Promise.reject();
     }
-
+    //bycrypt set up for validating passwrd
     return new Promise((resolve, reject) => {
       bcrypt.compare(password, user.password, (err, res) => {
         // console.log(res);
@@ -109,6 +109,8 @@ UserSchema.statics.findByCredentials = function (email, password) {
   });
 
 };
+
+//middleware that handles the encryption of the password passed before saving
 UserSchema.pre('save', function (next) {
   var user = this;
 
